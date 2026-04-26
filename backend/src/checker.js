@@ -37,11 +37,11 @@ async function performCheck(monitor) {
   const uptimePercent = recentChecks.length > 0 ? (upCount / recentChecks.length) * 100 : 0;
 
   const avgResult = db.prepare(
-    'SELECT AVG(response_time) as avg FROM checks WHERE monitor_id = ? AND status = "up" ORDER BY checked_at DESC LIMIT 100'
+    "SELECT AVG(response_time) as avg FROM checks WHERE monitor_id = ? AND status = 'up' ORDER BY checked_at DESC LIMIT 100"
   ).get(monitor.id);
 
   db.prepare(
-    'UPDATE monitors SET status = ?, uptime_percent = ?, avg_response_time = ?, last_checked = datetime("now") WHERE id = ?'
+    "UPDATE monitors SET status = ?, uptime_percent = ?, avg_response_time = ?, last_checked = datetime('now') WHERE id = ?"
   ).run(status, uptimePercent, avgResult?.avg || 0, monitor.id);
 
   handleAlerts(monitor, status);
@@ -65,7 +65,7 @@ function handleAlerts(monitor, newStatus) {
 
   if (newStatus === 'up' && prevStatus === 'down') {
     db.prepare(
-      'UPDATE alerts SET resolved = 1, resolved_at = datetime("now") WHERE monitor_id = ? AND resolved = 0'
+      "UPDATE alerts SET resolved = 1, resolved_at = datetime('now') WHERE monitor_id = ? AND resolved = 0"
     ).run(monitor.id);
   }
 }

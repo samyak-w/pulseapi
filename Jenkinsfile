@@ -47,19 +47,6 @@ pipeline {
                 echo '--- Stage 3: Running Jest Tests ---'
                 sh 'cd backend && npm run test:ci'
             }
-            post {
-                always {
-                    echo 'Publishing Jest coverage report...'
-                    publishHTML(target: [
-                        allowMissing: false,
-                        alwaysLinkToLastBuild: true,
-                        keepAll: true,
-                        reportDir: 'backend/coverage/lcov-report',
-                        reportFiles: 'index.html',
-                        reportName: 'Jest Coverage Report'
-                    ])
-                }
-            }
         }
 
         stage('SonarCloud Analysis') {
