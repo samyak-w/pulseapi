@@ -51,6 +51,8 @@ pipeline {
         stage('SonarCloud Analysis') {
             steps {
                 echo '--- Stage 4: SonarCloud Code Quality Analysis ---'
+                // Free memory: node_modules not needed for scan (coverage already generated)
+                sh 'rm -rf backend/node_modules frontend/node_modules'
                 catchError(buildResult: 'SUCCESS', stageResult: 'UNSTABLE') {
                     sh """
                         cd backend
@@ -63,6 +65,7 @@ pipeline {
                             -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info \\
                             -Dsonar.host.url=${SONAR_HOST_URL} \\
                             -Dsonar.javascript.node.maxspace=256 \\
+                            -Dsonar.nodejs.executable=/usr/bin/node \\
                             -Dsonar.token=${SONAR_TOKEN}
                     """
                 }
