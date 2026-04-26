@@ -16,7 +16,6 @@ pipeline {
         SONAR_HOST_URL     = 'https://sonarcloud.io'
         SONAR_ORG          = 'samyak-w'
         SONAR_PROJECT_KEY  = 'samyak-w_pulseapi'
-        SONAR_SCANNER_HOME = "/home/samyakwaghmare2210/.sonar/sonar-scanner-8.0.1.6346-linux-x64"
     }
 
     stages {
@@ -53,9 +52,8 @@ pipeline {
             steps {
                 echo '--- Stage 4: SonarCloud Code Quality Analysis ---'
                 sh """
-                    export PATH=${SONAR_SCANNER_HOME}/bin:\$PATH
                     cd backend
-                    sonar-scanner \\
+                    npx sonar-scanner \\
                         -Dsonar.organization=${SONAR_ORG} \\
                         -Dsonar.projectKey=${SONAR_PROJECT_KEY} \\
                         -Dsonar.sources=src \\
