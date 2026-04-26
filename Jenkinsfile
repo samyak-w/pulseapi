@@ -28,20 +28,17 @@ pipeline {
             }
         }
 
-        stage('Install Dependencies') {
-            parallel {
-                stage('Backend Install') {
-                    steps {
-                        echo '--- Installing backend dependencies ---'
-                        sh 'cd backend && npm install'
-                    }
-                }
-                stage('Frontend Install') {
-                    steps {
-                        echo '--- Installing frontend dependencies ---'
-                        sh 'cd frontend && npm install'
-                    }
-                }
+        stage('Install Backend Dependencies') {
+            steps {
+                echo '--- Installing backend dependencies ---'
+                sh 'cd backend && npm install'
+            }
+        }
+
+        stage('Install Frontend Dependencies') {
+            steps {
+                echo '--- Installing frontend dependencies ---'
+                sh 'cd frontend && npm install'
             }
         }
 
