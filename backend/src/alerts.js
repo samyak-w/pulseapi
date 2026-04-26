@@ -37,8 +37,8 @@ router.get('/active', (req, res) => {
 router.get('/stats', (req, res) => {
   try {
     const total = db.prepare('SELECT COUNT(*) as count FROM monitors').get();
-    const up = db.prepare('SELECT COUNT(*) as count FROM monitors WHERE status = "up"').get();
-    const down = db.prepare('SELECT COUNT(*) as count FROM monitors WHERE status = "down"').get();
+    const up = db.prepare("SELECT COUNT(*) as count FROM monitors WHERE status = 'up'").get();
+    const down = db.prepare("SELECT COUNT(*) as count FROM monitors WHERE status = 'down'").get();
     const activeAlerts = db.prepare('SELECT COUNT(*) as count FROM alerts WHERE resolved = 0').get();
     const avgUptime = db.prepare('SELECT AVG(uptime_percent) as avg FROM monitors').get();
 
