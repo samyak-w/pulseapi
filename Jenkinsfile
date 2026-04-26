@@ -48,6 +48,13 @@ pipeline {
             }
         }
 
+        // --- OFFLOADED TO SaaS ---
+        // Stage 4 (SonarCloud Analysis) has been removed from Jenkins and offloaded 
+        // back to SonarCloud Automatic Analysis. 
+        // REASON: The e2-micro Google Cloud VM only has 1GB of physical RAM. 
+        // The SonarScanner requires a minimum of 2GB to run both Java and Node.js 
+        // analyzers simultaneously, causing persistent Out-of-Memory (OOM) WebSocket crashes.
+        /*
         stage('SonarCloud Analysis') {
             steps {
                 echo '--- Stage 4: SonarCloud Code Quality Analysis ---'
@@ -66,6 +73,7 @@ pipeline {
                 """
             }
         }
+        */
 
         stage('Docker Build & Push') {
             steps {
