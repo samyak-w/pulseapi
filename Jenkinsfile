@@ -31,14 +31,14 @@ pipeline {
         stage('Install Backend Dependencies') {
             steps {
                 echo '--- Installing backend dependencies ---'
-                sh 'cd backend && npm install'
+                sh 'cd backend && rm -rf node_modules && npm install'
             }
         }
 
         stage('Install Frontend Dependencies') {
             steps {
                 echo '--- Installing frontend dependencies ---'
-                sh 'cd frontend && npm install'
+                sh 'cd frontend && rm -rf node_modules && npm install'
             }
         }
 
