@@ -53,6 +53,8 @@ pipeline {
                 echo '--- Stage 4: SonarCloud Code Quality Analysis ---'
                 sh """
                     cd backend
+                    export NODE_OPTIONS="--max-old-space-size=2048"
+                    export SONAR_SCANNER_OPTS="-Xmx1024m"
                     npx sonar-scanner \\
                         -Dsonar.organization=${SONAR_ORG} \\
                         -Dsonar.projectKey=${SONAR_PROJECT_KEY} \\
