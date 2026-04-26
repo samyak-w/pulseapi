@@ -114,8 +114,8 @@ pipeline {
         success {
             echo '========================================='
             echo 'PulseAPI Deployed Successfully!'
-            echo "Backend:  http://${VM2_IP}:3001/api/health"
-            echo "Jenkins:  http://${VM1_IP}:8080"
+            echo 'Backend:  http://34.93.153.33:3001/api/health'
+            echo 'Jenkins:  http://34.14.194.65:8080'
             echo 'SonarCloud: https://sonarcloud.io/project/overview?id=samyak-w_pulseapi'
             echo '========================================='
         }
