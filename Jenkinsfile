@@ -53,21 +53,25 @@ pipeline {
                 echo '--- Stage 4: SonarCloud Code Quality Analysis ---'
                 // Free memory: node_modules not needed for scan (coverage already generated)
                 sh 'rm -rf backend/node_modules frontend/node_modules'
+                // Cooldown: let CPU burst credits recharge after heavy Jest + npm stages
+                sleep(time: 30, unit: 'SECONDS')
                 catchError(buildResult: 'SUCCESS', stageResult: 'UNSTABLE') {
-                    sh """
-                        cd backend
-                        export SONAR_SCANNER_OPTS="-Xmx256m"
-                        npx sonar-scanner \\
-                            -Dsonar.organization=${SONAR_ORG} \\
-                            -Dsonar.projectKey=${SONAR_PROJECT_KEY} \\
-                            -Dsonar.sources=src \\
-                            -Dsonar.tests=tests \\
-                            -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info \\
-                            -Dsonar.host.url=${SONAR_HOST_URL} \\
-                            -Dsonar.javascript.node.maxspace=256 \\
-                            -Dsonar.nodejs.executable=/usr/bin/node \\
-                            -Dsonar.token=${SONAR_TOKEN}
-                    """
+                    retry(2) {
+                        sh """
+                            cd backend
+                            export SONAR_SCANNER_OPTS="-Xmx256m"
+                            npx sonar-scanner \\
+                                -Dsonar.organization=${SONAR_ORG} \\
+                                -Dsonar.projectKey=${SONAR_PROJECT_KEY} \\
+                                -Dsonar.sources=src \\
+                                -Dsonar.tests=tests \\
+                                -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info \\
+                                -Dsonar.host.url=${SONAR_HOST_URL} \\
+                                -Dsonar.javascript.node.maxspace=256 \\
+                                -Dsonar.nodejs.executable=/usr/bin/node \\
+                                -Dsonar.token=${SONAR_TOKEN}
+                        """
+                    }
                 }
             }
         }
