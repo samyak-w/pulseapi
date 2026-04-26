@@ -1,0 +1,77 @@
+---
+- name: Deploy PulseAPI to App Server
+  hosts: appserver
+  become: yes
+  # dockerhub_username is passed via --extra-vars from Jenkinsfile
+  # Never hardcoded here
+
+  tasks:
+    - name: Install Docker
+      apt:
+        name: docker.io
+        state: present
+        update_cache: yes
+
+    - name: Install Docker Compose
+      apt:
+        name: docker-compose
+        state: present
+
+    - name: Start and enable Docker
+      systemd:
+        name: docker
+        state: started
+        enabled: yes
+
+    - name: Create app directory
+      file:
+        path: /home/samyakwaghmare2210/pulseapi
+        state: directory
+        owner: samyakwaghmare2210
+        group: samyakwaghmare2210
+        mode: '0755'
+
+    - name: Copy docker-compose file to server
+      copy:
+        src: ../docker-compose.yml
+        dest: /home/samyakwaghmare2210/pulseapi/docker-compose.yml
+        owner: samyakwaghmare2210
+        group: samyakwaghmare2210
+        mode: '0644'
+
+    - name: Pull latest backend image from Docker Hub
+      # dockerhub_username comes from Jenkins --extra-vars
+      command: docker pull {{ dockerhub_username }}/pulseapi-backend:latest
+
+    - name: Stop existing containers
+      command: docker-compose down
+      args:
+        chdir: /home/samyakwaghmare2210/pulseapi
+      environment:
+        DOCKERHUB_USERNAME: "{{ dockerhub_username }}"
+      ignore_errors: yes
+
+    - name: Start PulseAPI backend
+      command: docker-compose up -d
+      args:
+        chdir: /home/samyakwaghmare2210/pulseapi
+      environment:
+        DOCKERHUB_USERNAME: "{{ dockerhub_username }}"
+
+    - name: Wait for backend to be ready
+      wait_for:
+        host: localhost
+        port: 3001
+        delay: 5
+        timeout: 60
+
+    - name: Verify backend health
+      uri:
+        url: http://localhost:3001/api/health
+        method: GET
+        status_code: 200
+      register: health_check
+
+    - name: Show health check result
+      debug:
+        msg: "PulseAPI Backend is {{ health_check.json.status }} at {{ health_check.json.timestamp }}"

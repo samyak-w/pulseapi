@@ -1,0 +1,18 @@
+version: '3.8'
+
+services:
+  pulseapi-backend:
+    # DOCKERHUB_USERNAME is injected by Ansible as an environment variable
+    image: ${DOCKERHUB_USERNAME}/pulseapi-backend:latest
+    container_name: pulseapi-backend
+    restart: unless-stopped
+    ports:
+      - "3001:3001"
+    environment:
+      - NODE_ENV=production
+      - PORT=3001
+    volumes:
+      - pulseapi-data:/app/data
+
+volumes:
+  pulseapi-data:
