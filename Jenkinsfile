@@ -33,13 +33,13 @@ pipeline {
                 stage('Backend Install') {
                     steps {
                         echo '--- Installing backend dependencies ---'
-                        sh 'cd backend && npm ci'
+                        sh 'cd backend && npm install'
                     }
                 }
                 stage('Frontend Install') {
                     steps {
                         echo '--- Installing frontend dependencies ---'
-                        sh 'cd frontend && npm ci'
+                        sh 'cd frontend && npm install'
                     }
                 }
             }
